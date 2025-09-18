@@ -5,9 +5,7 @@ WORKDIR /app
 
 RUN pip install --no-cache-dir yt-dlp
 # RUN apt update && apt install ffmpeg -y
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache ffmpeg
 
 COPY --chmod=755 download.sh .
 ENTRYPOINT ["./download.sh"]

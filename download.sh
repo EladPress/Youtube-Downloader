@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Download YouTube video as MP4
 
 URL="$1"
