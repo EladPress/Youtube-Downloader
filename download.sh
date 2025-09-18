@@ -10,4 +10,4 @@ if ! command -v yt-dlp &> /dev/null; then
 fi
 
 # Download best video+audio and merge into MP4
-yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4" -o "%(title)s.%(ext)s" "$URL" --verbose -k
+yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4" -o "res/%(title)s.%(ext)s" "$URL" --verbose
