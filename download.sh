@@ -25,8 +25,20 @@ fi
 
 # Best video at any codec (yt-dlp ranks Premium formats first at equal resolution),
 # plus Premium 256k AAC (141) if available, else best AAC, else best audio.
-# Streams are remuxed into MP4 without re-encoding.
-yt-dlp -ic --no-cache-dir --force-ipv4 --no-playlist "$@" \
+# Streams are remuxed into MP4 without re-encoding; YouTube chapters are kept as MP4 chapters.
+# YouTube sometimes rejects a fresh download URL with HTTP 403; a new attempt
+# re-extracts new URLs and resumes the partial file.
+MAX_ATTEMPTS=3
+attempt=1
+until yt-dlp -ic --no-cache-dir --force-ipv4 --no-playlist "$@" \
   -f "bv*+141/bv*+ba[ext=m4a]/bv*+ba/b" \
-  --merge-output-format mp4 \
-  -o "res/%(title)s.%(ext)s" --verbose "$URL"
+  --merge-output-format mp4 --embed-chapters \
+  -o "res/%(title)s.%(ext)s" --verbose "$URL"; do
+  if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+    echo "ERROR: download failed after $MAX_ATTEMPTS attempts."
+    exit 1
+  fi
+  attempt=$((attempt + 1))
+  echo "Download failed, retrying in 5s (attempt $attempt/$MAX_ATTEMPTS)..."
+  sleep 5
+done
